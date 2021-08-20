@@ -1,0 +1,8 @@
+Pillow
+numpy
+torch
+torchvision
+tqdm
+albumentations
+tensorboard
+pytorch-lightning
