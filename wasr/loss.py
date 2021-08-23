@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
+from torchvision.transforms import InterpolationMode
 import torchvision.transforms.functional as TF
-import PIL
 
 def water_obstacle_separation_loss(features, gt_mask):
     """Computes the water-obstacle separation loss from intermediate features.
@@ -69,7 +69,7 @@ def focal_loss(logits, labels, gamma=2.0, alpha=4.0, target_scale='labels'):
     elif target_scale == 'labels':
         # Resize network output to match the label size
         labels_size = (labels.size(2), labels.size(3))
-        logits = TF.resize(logits, labels_size, interpolation=PIL.Image.BILINEAR)
+        logits = TF.resize(logits, labels_size, interpolation=InterpolationMode.BILINEAR)
     else:
         raise ValueError('Invalid value for target_scale: %s' % target_scale)
 

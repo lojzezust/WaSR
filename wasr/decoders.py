@@ -1,7 +1,6 @@
-import PIL
-
 import torch
 from torch import nn
+from torchvision.transforms import InterpolationMode
 import torchvision.transforms.functional as TF
 
 from .layers import AttentionRefinementModule, FeatureFusionModule, ASPPv2
@@ -57,8 +56,8 @@ class IMUDecoder(nn.Module):
         out = features['out']
         skip1 = features['skip1']
         imu_mask = features['imu_mask'].float().unsqueeze(1)
-        imu_mask_s1 = TF.resize(imu_mask, (out.size(2), out.size(3)), PIL.Image.NEAREST)
-        imu_mask_s0 = TF.resize(imu_mask, (skip1.size(2), skip1.size(3)), PIL.Image.NEAREST)
+        imu_mask_s1 = TF.resize(imu_mask, (out.size(2), out.size(3)), InterpolationMode.NEAREST)
+        imu_mask_s0 = TF.resize(imu_mask, (skip1.size(2), skip1.size(3)), InterpolationMode.NEAREST)
 
         # Concat backbone output and IMU
         out_imu = torch.cat([out, imu_mask_s1], dim=1)
