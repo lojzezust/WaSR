@@ -1,0 +1,4 @@
+image_dir: /path/to/dataset/images
+mask_dir: /path/to/dataset/masks
+imu_dir: /path/to/dataset/imus
+image_list: train_images.txt
