@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+from posixpath import splitext
 from PIL import Image
 import numpy as np
 import torch
@@ -6,6 +8,7 @@ import torchvision.transforms.functional as TF
 import yaml
 
 def read_mask(path):
+    """Reads class segmentation mask from an image file."""
     mask = np.array(Image.open(path))
 
     # Masks stored in RGB channels or as class ids
@@ -17,9 +20,15 @@ def read_mask(path):
     return mask
 
 def read_image_list(path):
+    """Reads image list from a file"""
     with open(path, 'r') as file:
         images = [line.strip() for line in file]
     return images
+
+def get_image_list(image_dir):
+    """Returns the list of images in the dir."""
+    image_list = [os.path.splitext(img)[0] for img in os.listdir(image_dir)]
+    return image_list
 
 class MaSTr1325Dataset(torch.utils.data.Dataset):
     """MaSTr1325 dataset wrapper
@@ -42,8 +51,11 @@ class MaSTr1325Dataset(torch.utils.data.Dataset):
             self.imu_dir = (self.dataset_dir / Path(data['imu_dir'])).resolve() if 'imu_dir' in data else None
 
             # Entries
-            image_list = (self.dataset_dir / data['image_list']).resolve()
-            self.images = read_image_list(image_list)
+            if 'image_list' in data:
+                image_list = (self.dataset_dir / data['image_list']).resolve()
+                self.images = read_image_list(image_list)
+            else:
+                self.images = get_image_list(self.image_dir)
 
         self.transform = transform
         self.normalize_t = normalize_t
