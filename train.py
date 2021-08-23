@@ -36,47 +36,47 @@ def get_arguments(input_args=None):
       A list of parsed arguments.
     """
     parser = argparse.ArgumentParser(description="DeepLab-ResNet Network", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--train-file", type=str,
-                        help="Path to the file containing the MaSTr training dataset mapping.")
-    parser.add_argument("--val-file", type=str,
-                        help="Path to the file containing the MaSTr val dataset mapping.")
-    parser.add_argument("--batch-size", type=int, default=DEVICE_BATCH_SIZE,
+    parser.add_argument("--train_config", type=str,
+                        help="Path to the training dataset configuration.")
+    parser.add_argument("--val_config", type=str,
+                        help="Path to the validation dataset configuration.")
+    parser.add_argument("--batch_size", type=int, default=DEVICE_BATCH_SIZE,
                         help="Minibatch size (number of samples) used on each device.")
     parser.add_argument("--validation", action="store_true",
                         help="Report performance on validation set and use early stopping.")
-    parser.add_argument("--num-classes", type=int, default=NUM_CLASSES,
+    parser.add_argument("--num_classes", type=int, default=NUM_CLASSES,
                         help="Number of classes to predict (including background).")
     parser.add_argument("--patience", type=int, default=PATIENCE,
                         help="Patience for early stopping (how many epochs to wait without increase).")
-    parser.add_argument("--log-steps", type=int, default=LOG_STEPS,
+    parser.add_argument("--log_steps", type=int, default=LOG_STEPS,
                         help="Number of steps between logging variables.")
     parser.add_argument("--gpus", default=NUM_GPUS,
                         help="Number of gpus (or GPU ids) used for training.")
     parser.add_argument("--workers", type=int, default=NUM_WORKERS,
                         help="Number of workers used for data loading.")
-    parser.add_argument("--random-seed", type=int, default=RANDOM_SEED,
+    parser.add_argument("--random_seed", type=int, default=RANDOM_SEED,
                         help="Random seed to have reproducible results.")
     parser.add_argument("--pretrained", type=bool, default=PRETRAINED_DEEPLAB,
                         help="Use pretrained DeepLab weights.")
-    parser.add_argument("--output-dir", type=str, default=OUTPUT_DIR,
+    parser.add_argument("--output_dir", type=str, default=OUTPUT_DIR,
                         help="Directory where the output will be stored (models and logs)")
-    parser.add_argument("--model-name", type=str, required=True,
+    parser.add_argument("--model_name", type=str, required=True,
                         help="Name of the model. Used to create model and log directories inside the output directory.")
-    parser.add_argument("--pretrained-weights", type=str, default=None,
+    parser.add_argument("--pretrained_weights", type=str, default=None,
                         help="Path to the pretrained weights to be used.")
     parser.add_argument("--imu", action="store_true",
                         help="Whether to use the IMU variant of the network.")
     parser.add_argument("--model", type=str, choices=['wasr_resnet101', 'wasr_resnet50', 'deeplab'], default=MODEL,
                         help="Which backbone (or model) to use in the WaSR network.")
-    parser.add_argument("--monitor-metric", type=str, default=MONITOR_VAR,
+    parser.add_argument("--monitor_metric", type=str, default=MONITOR_VAR,
                         help="Validation metric to monitor for early stopping and best model saving.")
-    parser.add_argument("--monitor-metric-mode", type=str, default=MONITOR_VAR_MODE, choices=['min', 'max'],
+    parser.add_argument("--monitor_metric_mode", type=str, default=MONITOR_VAR_MODE, choices=['min', 'max'],
                         help="Maximize or minimize the monitored metric.")
-    parser.add_argument("--no-augmentation", action="store_true",
+    parser.add_argument("--no_augmentation", action="store_true",
                         help="Disable on-the-fly image augmentation of the dataset.")
     parser.add_argument("--precision", default=PRECISION, type=int, choices=[16,32],
                         help="Floating point precision.")
-    parser.add_argument("--resume-from", type=str, default=None,
+    parser.add_argument("--resume_from", type=str, default=None,
                         help="Resume training from specified checkpoint.")
 
     parser = LitModel.add_argparse_args(parser)
@@ -96,7 +96,7 @@ def train_wasr(args):
     if not args.no_augmentation:
         transform = get_augmentation_transform()
 
-    train_ds = MaSTr1325Dataset(args.train_file, transform=transform,
+    train_ds = MaSTr1325Dataset(args.train_config, transform=transform,
                                 normalize_t=normalize_t)
 
     train_dl = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
@@ -104,7 +104,7 @@ def train_wasr(args):
 
     val_dl = None
     if args.validation:
-        val_ds = MaSTr1325Dataset(args.val_file, normalize_t=normalize_t, include_original=True)
+        val_ds = MaSTr1325Dataset(args.val_config, normalize_t=normalize_t, include_original=True)
         val_dl = DataLoader(val_ds, batch_size=args.batch_size, num_workers=args.workers)
 
     if args.model == 'wasr_resnet101':

@@ -23,20 +23,20 @@ class LitModel(pl.LightningModule):
     def add_argparse_args(parser):
         """Adds model specific parameters to parser."""
 
-        parser.add_argument("--learning-rate", type=float, default=LEARNING_RATE,
+        parser.add_argument("--learning_rate", type=float, default=LEARNING_RATE,
                             help="Base learning rate for training with polynomial decay.")
         parser.add_argument("--momentum", type=float, default=MOMENTUM,
                             help="Momentum component of the optimiser.")
         parser.add_argument("--epochs", type=int, default=NUM_EPOCHS,
                             help="Number of training epochs.")
-        parser.add_argument("--lr-decay-pow", type=float, default=LR_DECAY_POW,
+        parser.add_argument("--lr_decay_pow", type=float, default=LR_DECAY_POW,
                             help="Decay parameter to compute the learning rate decay.")
-        parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
+        parser.add_argument("--weight_decay", type=float, default=WEIGHT_DECAY,
                             help="Regularisation parameter for L2-loss.")
-        parser.add_argument("--focal-loss-scale", type=str, default=FOCAL_LOSS_SCALE, choices=['logits', 'labels'],
+        parser.add_argument("--focal_loss_scale", type=str, default=FOCAL_LOSS_SCALE, choices=['logits', 'labels'],
                             help="Which scale to use for focal loss computation (logits or labels).")
-        parser.add_argument("--no-separation-loss", action='store_true', help="Disable separation loss.")
-        parser.add_argument("--separation-loss-lambda", default=SL_LAMBDA, type=float,
+        parser.add_argument("--no_separation_loss", action='store_true', help="Disable separation loss.")
+        parser.add_argument("--separation_loss_lambda", default=SL_LAMBDA, type=float,
                             help="The separation loss lambda (weight).")
 
         return parser
