@@ -1,10 +1,18 @@
+import os
 import torch
 from torch import nn
+import pytorch_lightning as pl
 
 from collections import OrderedDict
 from collections.abc import Iterable, Mapping
 from typing import Dict
 
+class ModelExporter(pl.Callback):
+    """Exports model at the end of the training."""
+    def on_fit_end(self, trainer, pl_module):
+        export_path = os.path.join(trainer.log_dir, 'model.pth')
+        print(export_path)
+        torch.save(pl_module.model.cpu(), export_path)
 
 class IntermediateLayerGetter(nn.ModuleDict):
     """

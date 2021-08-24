@@ -9,6 +9,7 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 from wasr.models import wasr_deeplabv2_resnet101, wasr_deeplabv2_resnet50, deeplabv3_resnet101
 from wasr.train import LitModel
+from wasr.utils import ModelExporter
 from datasets.mastr import MaSTr1325Dataset
 from datasets.transforms import get_augmentation_transform, PytorchHubNormalization
 
@@ -135,6 +136,8 @@ def train_wasr(args):
         if args.patience is not None:
             callbacks.append(EarlyStopping(monitor=args.monitor_metric, patience=args.patience, mode=args.monitor_metric_mode))
         callbacks.append(ModelCheckpoint(save_last=True, save_top_k=1, monitor=args.monitor_metric, mode=args.monitor_metric_mode))
+
+        callbacks.append(ModelExporter())
 
     trainer = pl.Trainer(logger=logger,
                          gpus=args.gpus,
