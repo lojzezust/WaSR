@@ -10,6 +10,8 @@ from tqdm.auto import tqdm
 from datasets.mastr import MaSTr1325Dataset
 from datasets.transforms import PytorchHubNormalization
 from wasr.inference import Predictor
+import wasr.models as models
+from wasr.utils import load_weights
 
 
 # Colors corresponding to each segmentation class
@@ -20,6 +22,7 @@ SEGMENTATION_COLORS = np.array([
 ], np.uint8)
 
 BATCH_SIZE = 12
+MODEL = 'wasr_resnet101_imu'
 
 
 def get_arguments():
@@ -31,8 +34,10 @@ def get_arguments():
     parser = argparse.ArgumentParser(description="WaSR Network MaSTr1325 Inference")
     parser.add_argument("--dataset_config", type=str, required=True,
                         help="Path to the file containing the MaSTr1325 dataset mapping.")
-    parser.add_argument("--model_path", type=str, required=True,
-                        help="Name of the model. Used to read correct model and write predictions to a model subdir.")
+    parser.add_argument("--model", type=str, choices=models.model_list, default=MODEL,
+                        help="Model architecture.")
+    parser.add_argument("--weights", type=str, required=True,
+                        help="Path to the model weights or a model checkpoint.")
     parser.add_argument("--output_dir", type=str, required=True,
                         help="Output directory.")
     parser.add_argument("--batch_size", type=int, default=BATCH_SIZE,
@@ -46,7 +51,10 @@ def predict(args):
     dataset = MaSTr1325Dataset(args.dataset_config, normalize_t=PytorchHubNormalization())
     dl = DataLoader(dataset, batch_size=args.batch_size, num_workers=1)
 
-    model = torch.load(args.model_path)
+    # Prepare model
+    model = models.get_model(args.model, pretrained=False)
+    state_dict = load_weights(args.weights)
+    model.load_state_dict(state_dict)
     predictor = Predictor(model, args.fp16)
 
     output_dir = Path(args.output_dir)

@@ -7,9 +7,9 @@ from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 
-from wasr.models import wasr_deeplabv2_resnet101, wasr_deeplabv2_resnet50, deeplabv3_resnet101
+import wasr.models as models
 from wasr.train import LitModel
-from wasr.utils import ModelExporter
+from wasr.utils import ModelExporter, load_weights
 from datasets.mastr import MaSTr1325Dataset
 from datasets.transforms import get_augmentation_transform, PytorchHubNormalization
 
@@ -24,7 +24,7 @@ RANDOM_SEED = None
 OUTPUT_DIR = 'output'
 PRETRAINED_DEEPLAB = True
 PRECISION = 32
-MODEL = 'wasr_resnet101'
+MODEL = 'wasr_resnet101_imu'
 MONITOR_VAR = 'val/iou/obstacle'
 MONITOR_VAR_MODE = 'max'
 
@@ -65,10 +65,8 @@ def get_arguments(input_args=None):
                         help="Name of the model. Used to create model and log directories inside the output directory.")
     parser.add_argument("--pretrained_weights", type=str, default=None,
                         help="Path to the pretrained weights to be used.")
-    parser.add_argument("--imu", action="store_true",
-                        help="Whether to use the IMU variant of the network.")
-    parser.add_argument("--model", type=str, choices=['wasr_resnet101', 'wasr_resnet50', 'deeplab'], default=MODEL,
-                        help="Which backbone (or model) to use in the WaSR network.")
+    parser.add_argument("--model", type=str, choices=models.model_list, default=MODEL,
+                        help="Which model architecture to use for training.")
     parser.add_argument("--monitor_metric", type=str, default=MONITOR_VAR,
                         help="Validation metric to monitor for early stopping and best model saving.")
     parser.add_argument("--monitor_metric_mode", type=str, default=MONITOR_VAR_MODE, choices=['min', 'max'],
@@ -108,21 +106,12 @@ def train_wasr(args):
         val_ds = MaSTr1325Dataset(args.val_config, normalize_t=normalize_t, include_original=True)
         val_dl = DataLoader(val_ds, batch_size=args.batch_size, num_workers=args.workers)
 
-    if args.model == 'wasr_resnet101':
-        model = wasr_deeplabv2_resnet101(num_classes=args.num_classes, pretrained=args.pretrained, imu=args.imu)
-    elif args.model == 'wasr_resnet50':
-        model = wasr_deeplabv2_resnet50(num_classes=args.num_classes, imu=args.imu)
-    elif args.model == 'deeplab':
-        model = deeplabv3_resnet101(num_classes=args.num_classes, pretrained=args.pretrained)
+    model = models.get_model(args.model, num_classes=args.num_classes, pretrained=args.pretrained)
 
     if args.pretrained_weights is not None:
         print(f"Loading weights from: {args.pretrained_weights}")
-        state_dict = torch.load(args.pretrained_weights, map_location='cpu')
-        if 'model' in state_dict:
-            # Loading weights from checkpoint
-            model.load_state_dict(state_dict['model'])
-        else:
-            model.load_state_dict(state_dict)
+        state_dict = load_weights(args.pretrained_weights)
+        model.load_state_dict(state_dict)
 
     model = LitModel(model, args.num_classes, args)
 

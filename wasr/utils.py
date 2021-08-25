@@ -7,12 +7,19 @@ from collections import OrderedDict
 from collections.abc import Iterable, Mapping
 from typing import Dict
 
+def load_weights(path):
+    state_dict = torch.load(path, map_location='cpu')
+    if 'model' in state_dict:
+        # Loading weights from checkpoint
+        state_dict = state_dict['model']
+
+    return state_dict
+
 class ModelExporter(pl.Callback):
-    """Exports model at the end of the training."""
+    """Exports model weights at the end of the training."""
     def on_fit_end(self, trainer, pl_module):
-        export_path = os.path.join(trainer.log_dir, 'model.pth')
-        print(export_path)
-        torch.save(pl_module.model.cpu(), export_path)
+        export_path = os.path.join(trainer.log_dir, 'weights.pth')
+        torch.save(pl_module.model.state_dict(), export_path)
 
 class IntermediateLayerGetter(nn.ModuleDict):
     """

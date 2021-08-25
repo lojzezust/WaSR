@@ -9,9 +9,23 @@ from torchvision.models.utils import load_state_dict_from_url
 from .decoders import NoIMUDecoder, IMUDecoder
 from .utils import IntermediateLayerGetter
 
+model_list = ['wasr_resnet101', 'wasr_resnet101_imu', 'wasr_resnet50', 'wasr_resnet50_imu', 'deeplab']
 model_urls = {
     'deeplabv3_resnet101_coco': 'https://download.pytorch.org/models/deeplabv3_resnet101_coco-586e9e4e.pth'
 }
+
+def get_model(model_name, num_classes=3, pretrained=True):
+    imu = model_name.endswith('_imu')
+    if model_name.startswith('wasr_resnet101'):
+        model = wasr_deeplabv2_resnet101(num_classes=num_classes, pretrained=pretrained, imu=imu)
+    elif model_name.startswith('wasr_resnet50'):
+        model = wasr_deeplabv2_resnet50(num_classes=num_classes, imu=imu)
+    elif model_name == 'deeplab':
+        model = deeplabv3_resnet101(num_classes=num_classes, pretrained=pretrained)
+    else:
+        raise ValueError('Unknown model: %s' % model_name)
+
+    return model
 
 class WaSR(nn.Module):
     """
