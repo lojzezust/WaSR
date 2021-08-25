@@ -2,17 +2,26 @@
 
 PyTorch re-implementation of the WaSR network [[1](#ref1)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset[[2](#ref2)].
 
-## 1. Setup
+## Setup
 
 Install the requirements provided in `requirements.txt`.
 
 ```bash
 pip install -r requirements.txt
 ```
-## 2. Training
+
+## Pretrained models
+
+Currently available pretrained model weights. All models are trained on the MaSTr1325 dataset.
+
+| name           | backbone   | IMU | F1 score      | url     |
+|----------------|------------|-----|---------------|---------|
+| wasr_rn101_imu | ResNet-101 | ✓   | 0.926 (0.750) | [weights](https://github.com/lojzezust/WaSR/releases/download/weights/wasr_rn101_imu.pth) |
+
+## Model training
 
 1. Download and prepare the [MaSTr1325 dataset](https://box.vicos.si/borja/viamaro/index.html#mastr1325) (images and GT masks). If you plan to use the IMU-enabled model also download the IMU masks.
-2. Edit the dataset configuration (`configs/mastr1325_train.yaml`, `configs/mastr1325_val.yaml`) files so that they correctly point to the prepared directories.
+2. Edit the dataset configuration (`configs/mastr1325_train.yaml`, `configs/mastr1325_val.yaml`) files so that they correctly point to the dataset directories.
 3. Use the `train.py` to train the network.
 
 ```bash
@@ -26,13 +35,9 @@ python train.py \
 --epochs 50
 ```
 
-### 2.1 Logging and model weights
+### Model architectures
 
-A log dir with the specified model name will be created inside the `output` directory. Model checkpoints and training logs will be stored here. At the end of the training the model weights are also exported to a `weights.pth` file inside this directory.
-
-### 2.2 Model architectures
-
-By default the ResNet-101, IMU-enabled version of the WaSR is used in training. To select a different model architecture use the `--model` flag. Currently available model architectures:
+By default the ResNet-101, IMU-enabled version of the WaSR is used in training. To select a different model architecture use the `--model` argument. Currently implemented model architectures:
 
 | model              | backbone   | IMU |
 |--------------------|------------|-----|
@@ -42,6 +47,48 @@ By default the ResNet-101, IMU-enabled version of the WaSR is used in training. 
 | wasr_resnet50      | ResNet-50  |     |
 | deeplab            | ResNet-101 |     |
 
-## Prediction
+### Logging and model weights
 
-##
+A log dir with the specified model name will be created inside the `output` directory. Model checkpoints and training logs will be stored here. At the end of the training the model weights are also exported to a `weights.pth` file inside this directory.
+
+## Model inference
+
+To run model inference using pretrained weights use the `predict.py` script. A sample dataset config file (`configs/examples.yaml`) is provided to run examples from the `examples` directory.
+
+```bash
+# export CUDA_VISIBLE_DEVICES=-1 # CPU only
+export CUDA_VISIBLE_DEVICES=0 # GPU to use
+python predict.py \
+--dataset_config configs/examples.yaml \
+--model wasr_resnet101_imu \
+--weights path/to/model/weights.pth \
+--output_dir output/predictions
+```
+
+Predictions will be stored as color-coded masks to the specified output directory.
+## Publication
+
+Lojze Žust & Matej Kristan. "Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding." Accepted to Winter Conference on Applications of Computer Vision (WACV), 2022. [[arXiv](https://arxiv.org/abs/2108.00564)]
+
+### Citation
+
+If you use this code, please cite our papers:
+
+```
+@InProceedings{Zust2022Learning,
+    title = {Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding},
+    author = {Lojze \v{Z}ust and Matej Kristan},
+    booktitle = {WACV},
+    year = {2022}
+}
+```
+
+```
+@article{Bovcon2021WaSR,
+  title={WaSR--A Water Segmentation and Refinement Maritime Obstacle Detection Network},
+  author={Bovcon, Borja and Kristan, Matej},
+  journal={IEEE transactions on cybernetics},
+
+}
+```
+## References
