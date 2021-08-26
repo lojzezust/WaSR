@@ -1,6 +1,6 @@
 # WaSR: A Water Segmentation and Refinement Maritime Obstacle Detection Network
 
-PyTorch re-implementation of the WaSR network [[1](#ref1)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset[[2](#ref2)].
+PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)].
 
 ## Setup
 
@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ## Pretrained models
 
-Currently available pretrained model weights. All models are trained on the MaSTr1325 dataset.
+Currently available pretrained model weights. All models are trained on the MaSTr1325 dataset and evaluated on the MODS benchmark [[3](#ref-mods)].
 
 | name           | backbone   | IMU | F1 score      | url     |
 |----------------|------------|-----|---------------|---------|
@@ -51,6 +51,12 @@ By default the ResNet-101, IMU-enabled version of the WaSR is used in training. 
 
 A log dir with the specified model name will be created inside the `output` directory. Model checkpoints and training logs will be stored here. At the end of the training the model weights are also exported to a `weights.pth` file inside this directory.
 
+Logged metrics (loss, validation accuracy, validation IoU) can be inspected using tensorboard.
+
+```bash
+tensorboard --logdir output/logs/model_name
+```
+
 ## Model inference
 
 To run model inference using pretrained weights use the `predict.py` script. A sample dataset config file (`configs/examples.yaml`) is provided to run examples from the `examples` directory.
@@ -87,8 +93,13 @@ If you use this code, please cite our papers:
 @article{Bovcon2021WaSR,
   title={WaSR--A Water Segmentation and Refinement Maritime Obstacle Detection Network},
   author={Bovcon, Borja and Kristan, Matej},
-  journal={IEEE transactions on cybernetics},
-
+  journal={IEEE transactions on cybernetics}
 }
 ```
 ## References
+
+<a name="ref-wasr"></a>[1] Bovcon, B., & Kristan, M. (2021). WaSR--A Water Segmentation and Refinement Maritime Obstacle Detection Network. IEEE Transactions on Cybernetics
+
+<a name="ref-mastr"></a>[2] Bovcon, B., Muhovič, J., Perš, J., & Kristan, M. (2019). The MaSTr1325 dataset for training deep USV obstacle detection models. 2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)
+
+<a name="ref-mods"></a>[3] Bovcon, B., Muhovič, J., Vranac, D., Mozetič, D., Perš, J., & Kristan, M. (2021). MODS -- A USV-oriented object detection and obstacle segmentation benchmark. http://arxiv.org/abs/2105.02359
