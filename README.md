@@ -2,6 +2,10 @@
 
 PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)].
 
+<p align="center">
+    <img src="figures/wasr.png" alt="WaSR example" width="960px">
+</p>
+
 ## Setup
 
 Install the requirements provided in `requirements.txt`.
@@ -29,7 +33,7 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3 # GPUs to use
 python train.py \
 --train_config configs/mastr1325_train.yaml \
 --val_config configs/mastr1325_val.yaml \
---model_name my_wasr \ 
+--model_name my_wasr \
 --validation \
 --batch_size 4 \
 --epochs 50
