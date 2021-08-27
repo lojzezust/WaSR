@@ -20,9 +20,10 @@ pip install -r requirements.txt
 
 Currently available pretrained model weights. All models are trained on the MaSTr1325 dataset and evaluated on the MODS benchmark [[3](#ref-mods)].
 
-| name           | backbone   | IMU | F1 score      | url     |
-|----------------|------------|-----|---------------|---------|
-| wasr_rn101_imu | ResNet-101 | ✓   | 0.926 (0.750) | [weights](https://github.com/lojzezust/WaSR/releases/download/weights/wasr_rn101_imu.pth) |
+| model              | backbone   | IMU | url                                                                                       |
+|--------------------|------------|-----|-------------------------------------------------------------------------------------------|
+| wasr_resnet101     | ResNet-101 |     | [weights](https://github.com/lojzezust/WaSR/releases/download/weights/wasr_rn101.pth)     |
+| wasr_resnet101_imu | ResNet-101 | ✓   | [weights](https://github.com/lojzezust/WaSR/releases/download/weights/wasr_rn101_imu.pth) |
 
 ## Model training
 
