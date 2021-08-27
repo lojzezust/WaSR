@@ -87,7 +87,7 @@ Lojze Žust & Matej Kristan. "Learning Maritime Obstacle Detection from Weak Ann
 
 If you use this code, please cite our papers:
 
-```
+```bib
 @InProceedings{Zust2022Learning,
     title = {Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding},
     author = {Lojze \v{Z}ust and Matej Kristan},
@@ -96,7 +96,7 @@ If you use this code, please cite our papers:
 }
 ```
 
-```
+```bib
 @article{Bovcon2021WaSR,
   title={WaSR--A Water Segmentation and Refinement Maritime Obstacle Detection Network},
   author={Bovcon, Borja and Kristan, Matej},
