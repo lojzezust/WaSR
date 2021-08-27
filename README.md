@@ -8,7 +8,9 @@ PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains trainin
 
 ## Setup
 
-Install the requirements provided in `requirements.txt`.
+**Requirements**: Python >= 3.6, PyTorch, PyTorch Lightning (for training)
+
+Install the dependencies provided in `requirements.txt`.
 
 ```bash
 pip install -r requirements.txt
