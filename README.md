@@ -1,6 +1,6 @@
 # WaSR: A Water Segmentation and Refinement Maritime Obstacle Detection Network
 
-PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)].
+PyTorch re-implementation of the [WaSR network](https://github.com/bborja/wasr_network) [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)]. 
 
 <p align="center">
     <img src="figures/wasr.png" alt="WaSR example" width="960px">
