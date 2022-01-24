@@ -89,10 +89,11 @@ If you use this code, please cite our papers:
 
 ```bib
 @InProceedings{Zust2022Learning,
-    title = {Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding},
-    author = {Lojze \v{Z}ust and Matej Kristan},
-    booktitle = {WACV},
-    year = {2022}
+  title={Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding},
+  author={{\v{Z}}ust, Lojze and Kristan, Matej},
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={955--964},
+  year={2022}
 }
 ```
 
@@ -100,7 +101,7 @@ If you use this code, please cite our papers:
 @article{Bovcon2021WaSR,
   title={WaSR--A Water Segmentation and Refinement Maritime Obstacle Detection Network},
   author={Bovcon, Borja and Kristan, Matej},
-  journal={IEEE transactions on cybernetics}
+  journal={IEEE Transactions on Cybernetics}
 }
 ```
 ## References
