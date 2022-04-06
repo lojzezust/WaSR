@@ -1,8 +1,4 @@
 torch>=1.7.0
 torchvision>=0.9.0
-pytorch-lightning>=1.0.6
 Pillow
 numpy
-tqdm
-albumentations
-tensorboard
