@@ -7,6 +7,8 @@ PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains trainin
     <img src="figures/wasr.png" alt="WaSR example" width="960px">
 </p>
 
+🌟 **New:** A temporal extension of WaSR (WaSR-T) is [now available](https://github.com/lojzezust/WaSR-T).
+
 ## Setup
 
 **Requirements**: Python >= 3.6, PyTorch, PyTorch Lightning (for training)
