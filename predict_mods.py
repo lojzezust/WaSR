@@ -94,7 +94,7 @@ def predict_mods(args):
 
     precision = 16 if args.fp16 else 32
     trainer = pl.Trainer(gpus=args.gpus,
-                         accelerator='ddp',
+                         strategy='ddp',
                          precision=precision,
                          logger=False)
 

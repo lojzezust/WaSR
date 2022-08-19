@@ -131,7 +131,7 @@ def train_wasr(args):
     trainer = pl.Trainer(logger=logger,
                          gpus=args.gpus,
                          max_epochs=args.epochs,
-                         accelerator='ddp',
+                         strategy='ddp',
                          resume_from_checkpoint=args.resume_from,
                          callbacks=callbacks,
                          sync_batchnorm=True,

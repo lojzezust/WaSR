@@ -11,9 +11,10 @@ PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains trainin
 
 ## Setup
 
-**Requirements**: Python >= 3.6, PyTorch, PyTorch Lightning (for training)
+**Requirements**: Python >= 3.6, PyTorch, PyTorch Lightning (for training and multi-GPU inference)
 
-Install the dependencies provided in `requirements.txt`.
+1. [Install PyTorch](https://pytorch.org/get-started/locally/).
+2. Install the dependencies provided in `requirements.txt`.
 
 ```bash
 pip install -r requirements.txt
@@ -89,6 +90,7 @@ We also provide a script to run the inference on the MODS maritime obstacle dete
 1. Download and extract the [MODS dataset](https://vision.fe.uni-lj.si/public/mods/).
 2. Run inference using the `predict_mods.py` script.
 ```bash
+export CUDA_VISIBLE_DEVICES=0,1 # GPU(s) to use
 python predict_mods.py \
 --architecture wasr_resnet101_imu \
 --dataset-path /path/to/MODS/ \

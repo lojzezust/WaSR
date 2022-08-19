@@ -1,5 +1,5 @@
 import torch
-from pytorch_lightning.metrics import Metric
+from torchmetrics import Metric
 
 class PixelAccuracy(Metric):
     def __init__(self, num_classes, dist_sync_on_step=False):
