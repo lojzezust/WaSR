@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms.functional as TF
 
 from .utils import tensor_map
-
+import warnings
 
 class Predictor():
     def __init__(self, model, half_precision=False):
@@ -38,3 +38,35 @@ class Predictor():
         out_class = out_class.byte().numpy()
 
         return out_class
+
+
+try:
+    from pytorch_lightning import LightningModule
+except:
+    warnings.warn('PyTorch Lightning is required for some features (training, distributed inference).')
+    LightningModule = None
+
+class LitPredictor(LightningModule):
+    """Lightning model wrapper for running inference. Supports multi-gpu inference."""
+    def __init__(self, model, export_fn, raw=False):
+        super().__init__()
+        self.model = model
+        self.export_fn = export_fn
+        self.raw = raw
+
+    def predict_step(self, batch, batch_idx, dataloader_idx=None):
+        features, metadata = batch
+        outputs = self.model(features)
+        if self.raw:
+            # Keep raw input and device (e.g. for mask filling)
+            self.export_fn(outputs, batch)
+            return
+
+        out = outputs['out'].cpu().detach()
+
+        # Upscale
+        size = (features['image'].size(2), features['image'].size(3))
+        out = TF.resize(out, size, interpolation=Image.BILINEAR)
+        out = out.numpy()
+
+        self.export_fn(out, batch)

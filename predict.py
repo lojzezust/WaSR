@@ -22,7 +22,7 @@ SEGMENTATION_COLORS = np.array([
 ], np.uint8)
 
 BATCH_SIZE = 12
-MODEL = 'wasr_resnet101_imu'
+ARCHITECTURE = 'wasr_resnet101_imu'
 
 
 def get_arguments():
@@ -34,7 +34,7 @@ def get_arguments():
     parser = argparse.ArgumentParser(description="WaSR Network MaSTr1325 Inference")
     parser.add_argument("--dataset_config", type=str, required=True,
                         help="Path to the file containing the MaSTr1325 dataset mapping.")
-    parser.add_argument("--model", type=str, choices=models.model_list, default=MODEL,
+    parser.add_argument("--architecture", type=str, choices=models.model_list, default=ARCHITECTURE,
                         help="Model architecture.")
     parser.add_argument("--weights", type=str, required=True,
                         help="Path to the model weights or a model checkpoint.")
@@ -52,7 +52,7 @@ def predict(args):
     dl = DataLoader(dataset, batch_size=args.batch_size, num_workers=1)
 
     # Prepare model
-    model = models.get_model(args.model, pretrained=False)
+    model = models.get_model(args.architecture, pretrained=False)
     state_dict = load_weights(args.weights)
     model.load_state_dict(state_dict)
     predictor = Predictor(model, args.fp16)

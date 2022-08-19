@@ -1,5 +1,5 @@
 # WaSR: A Water Segmentation and Refinement Maritime Obstacle Detection Network
-[[`paper`](https://ieeexplore.ieee.org/document/9477208)] [[`TensorFlow implementation`](https://github.com/bborja/wasr_network)] [[`BibTeX`](#cite)]
+[[`paper`](https://prints.vicos.si/publications/392/wasr-a-water-segmentation-and-refinement-maritime-obstacle-detection-network)] [[`original implementation`](https://github.com/bborja/wasr_network)] [[`BibTeX`](#cite)]
 
 PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)]. 
 
@@ -47,7 +47,7 @@ python train.py \
 
 ### Model architectures
 
-By default the ResNet-101, IMU-enabled version of the WaSR is used in training. To select a different model architecture use the `--model` argument. Currently implemented model architectures:
+By default the ResNet-101, IMU-enabled version of the WaSR is used in training. To select a different model architecture use the `--architecture` argument. Currently implemented model architectures:
 
 | model              | backbone   | IMU |
 |--------------------|------------|-----|
@@ -76,15 +76,37 @@ To run model inference using pretrained weights use the `predict.py` script. A s
 export CUDA_VISIBLE_DEVICES=0 # GPU to use
 python predict.py \
 --dataset_config configs/examples.yaml \
---model wasr_resnet101_imu \
+--architecture wasr_resnet101_imu \
 --weights path/to/model/weights.pth \
 --output_dir output/predictions
 ```
 
 Predictions will be stored as color-coded masks to the specified output directory.
+
+## MODS inference & evaluation
+
+We also provide a script to run the inference on the MODS maritime obstacle detection benchmark [[3](#ref-mods)]. To evaluate your model on MODS follow the steps:
+1. Download and extract the [MODS dataset](https://vision.fe.uni-lj.si/public/mods/).
+2. Run inference using the `predict_mods.py` script.
+```bash
+python predict_mods.py \
+--architecture wasr_resnet101_imu \
+--dataset-path /path/to/MODS/ \
+--weights output/weights/wasr_rn101_imu.pth \
+--output-dir output/mods_predictions/wasr_resnet101_imu
+```
+3. Evaluate using the [MODS evaluation toolkit](https://github.com/bborja/mods_evaluation).  
+Edit the `configs/mods.yaml` in MODS evaluator to link to your root preditions directory (i.e. to `output/mods_predictions` in this example). Run the evaluation.
+```bash
+# In the MODS evaluator directory
+python modb_evaluation.py --workers 8 --config-file configs/mods.yaml wasr_resnet101_imu
+```
+
 ## Publication
 
-Lojze Žust & Matej Kristan. "Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding." Accepted to Winter Conference on Applications of Computer Vision (WACV), 2022. [[arXiv](https://arxiv.org/abs/2108.00564)]
+This re-implementation was used in the following publication:
+
+Lojze Žust & Matej Kristan. "Learning Maritime Obstacle Detection from Weak Annotations by Scaffolding." Winter Conference on Applications of Computer Vision (WACV), 2022. [[arXiv](https://arxiv.org/abs/2108.00564)]
 
 ### <a name="cite"></a>Citation
 
@@ -113,4 +135,4 @@ If you use this code, please cite our papers:
 
 <a name="ref-mastr"></a>[2] Bovcon, B., Muhovič, J., Perš, J., & Kristan, M. (2019). The MaSTr1325 dataset for training deep USV obstacle detection models. 2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)
 
-<a name="ref-mods"></a>[3] Bovcon, B., Muhovič, J., Vranac, D., Mozetič, D., Perš, J., & Kristan, M. (2021). MODS -- A USV-oriented object detection and obstacle segmentation benchmark. http://arxiv.org/abs/2105.02359
+<a name="ref-mods"></a>[3] Bovcon, B., Muhovič, J., Vranac, D., Mozetič, D., Perš, J., & Kristan, M. (2021). MODS -- A USV-oriented object detection and obstacle segmentation benchmark. IEEE Transactions on Intelligent Transportation Systems.
