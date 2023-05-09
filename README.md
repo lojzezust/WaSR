@@ -7,7 +7,10 @@ PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains trainin
     <img src="figures/wasr.png" alt="WaSR example" width="960px">
 </p>
 
-🌟 **New:** A temporal extension of WaSR (WaSR-T) is [now available](https://github.com/lojzezust/WaSR-T).
+### WaSR Model Family
+
+- 🌟 [April 2023] [**eWaSR**](https://github.com/tersekmatija/eWaSR): An efficient, embedded-compute-ready version of WaSR **(new)**.  
+- [July 2022] [**WaSR-T**](https://github.com/lojzezust/WaSR-T): A temporal (movement-aware) extension of WaSR.
 
 ## Setup
 
