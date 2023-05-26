@@ -73,14 +73,27 @@ tensorboard --logdir output/logs/model_name
 
 ## Model inference
 
-To run model inference using pretrained weights use the `predict.py` script. A sample dataset config file (`configs/examples.yaml`) is provided to run examples from the `examples` directory.
+To run model inference using pretrained weights use the `predict.py` script. Specify the image directory and IMU directory containing IMU masks (if you use the IMU-enabled architecture).
 
 ```bash
 # export CUDA_VISIBLE_DEVICES=-1 # CPU only
 export CUDA_VISIBLE_DEVICES=0 # GPU to use
 python predict.py \
---dataset_config configs/examples.yaml \
+--image_dir examples/images \
+--imu_dir examples/imus \
 --architecture wasr_resnet101_imu \
+--weights path/to/model/weights.pth \
+--output_dir output/predictions
+```
+
+For non-IMU versions of the model, no IMU masks are required:
+
+```bash
+# export CUDA_VISIBLE_DEVICES=-1 # CPU only
+export CUDA_VISIBLE_DEVICES=0 # GPU to use
+python predict.py \
+--image_dir examples/images \
+--architecture wasr_resnet101 \
 --weights path/to/model/weights.pth \
 --output_dir output/predictions
 ```

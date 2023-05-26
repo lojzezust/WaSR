@@ -7,7 +7,7 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
-from datasets.mastr import MaSTr1325Dataset
+from datasets.folder import FolderDataset
 from datasets.transforms import PytorchHubNormalization
 from wasr.inference import Predictor
 import wasr.models as models
@@ -32,8 +32,10 @@ def get_arguments():
       A list of parsed arguments.
     """
     parser = argparse.ArgumentParser(description="WaSR Network MaSTr1325 Inference")
-    parser.add_argument("--dataset_config", type=str, required=True,
-                        help="Path to the file containing the MaSTr1325 dataset mapping.")
+    parser.add_argument("--image_dir", type=str, required=True,
+                        help="Path to the directory containing input images.")
+    parser.add_argument("--imu_dir", type=str, default=None,
+                        help="(optional) Path to the directory containing input IMU masks.")
     parser.add_argument("--architecture", type=str, choices=models.model_list, default=ARCHITECTURE,
                         help="Model architecture.")
     parser.add_argument("--weights", type=str, required=True,
@@ -46,9 +48,20 @@ def get_arguments():
                         help="Use half precision for inference.")
     return parser.parse_args()
 
+def export_predictions(preds, batch, output_dir):
+    features, metadata = batch
+
+    for i, pred_mask in enumerate(preds):
+        pred_mask = SEGMENTATION_COLORS[pred_mask]
+        mask_img = Image.fromarray(pred_mask)
+
+        out_path = output_dir / Path(metadata['image_path'][i]).with_suffix('.png')
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        mask_img.save(str(out_path))
 
 def predict(args):
-    dataset = MaSTr1325Dataset(args.dataset_config, normalize_t=PytorchHubNormalization())
+    dataset = FolderDataset(args.image_dir, args.imu_dir, normalize_t=PytorchHubNormalization())
     dl = DataLoader(dataset, batch_size=args.batch_size, num_workers=1)
 
     # Prepare model
@@ -61,16 +74,11 @@ def predict(args):
     if not output_dir.exists():
         output_dir.mkdir(parents=True)
 
-    for features, labels in tqdm(iter(dl), total=len(dl)):
+    for batch in tqdm(iter(dl), total=len(dl)):
+        features, _ = batch
         pred_masks = predictor.predict_batch(features)
 
-        for i, pred_mask in enumerate(pred_masks):
-            pred_mask = SEGMENTATION_COLORS[pred_mask]
-            mask_img = Image.fromarray(pred_mask)
-
-            out_file = output_dir / labels['mask_filename'][i]
-
-            mask_img.save(out_file)
+        export_predictions(pred_masks, batch, output_dir)
 
 def main():
     args = get_arguments()
