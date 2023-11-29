@@ -1,5 +1,7 @@
 # WaSR: A Water Segmentation and Refinement Maritime Obstacle Detection Network
-[[`paper`](https://prints.vicos.si/publications/392/wasr-a-water-segmentation-and-refinement-maritime-obstacle-detection-network)] [[`original implementation`](https://github.com/bborja/wasr_network)] [[`BibTeX`](#cite)]
+[![paper](https://img.shields.io/badge/paper-52b69a?style=for-the-badge&logo=arxiv&logoColor=white)](https://prints.vicos.si/publications/392/wasr-a-water-segmentation-and-refinement-maritime-obstacle-detection-network)
+[![original](https://img.shields.io/badge/view-original-34a0a4?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bborja/wasr_network)
+[![cite](https://img.shields.io/badge/bibtex-168aad?style=for-the-badge&logo=overleaf&logoColor=white)](#cite)
 
 PyTorch re-implementation of the WaSR network [[1](#ref-wasr)]. Contains training code, prediction code and models pretrained on the MaSTr1325 dataset [[2](#ref-mastr)]. 
 
